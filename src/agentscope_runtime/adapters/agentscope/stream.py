@@ -32,6 +32,7 @@ setup_logger("ERROR")
 async def adapt_agentscope_message_stream(
     source_stream: AsyncIterator[Tuple[Msg, bool]],
     type_converters: Optional[Dict[str, Callable]] = None,
+    **kwargs,  # pylint:disable=unused-argument
 ) -> AsyncIterator[Union[Message, Content]]:
     # Initialize variables to avoid uncaught errors
     msg_id = None
