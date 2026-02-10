@@ -32,7 +32,6 @@ setup_logger("ERROR")
 async def adapt_agentscope_message_stream(
     source_stream: AsyncIterator[Tuple[Msg, bool]],
     type_converters: Optional[Dict[str, Callable]] = None,
-    **kwargs,  # pylint:disable=unused-argument
 ) -> AsyncIterator[Union[Message, Content]]:
     # Initialize variables to avoid uncaught errors
     msg_id = None
@@ -51,6 +50,7 @@ async def adapt_agentscope_message_stream(
     should_start_reasoning_message = True
     tool_use_messages_dict = {}
     tool_result_messages_dict = {}
+    custom_messages_dict = {}
     index = None
 
     # Run agent
@@ -150,7 +150,7 @@ async def adapt_agentscope_message_stream(
                             continue
                         fn = type_converters[blk_type]
                         # Send  message, element, last, tool_start, metadata
-                        # and usage
+                        # usage, and custom_messages_dict
                         out = fn(
                             element,
                             message,
@@ -158,6 +158,7 @@ async def adapt_agentscope_message_stream(
                             tool_start,
                             metadata,
                             usage,
+                            custom_messages_dict,
                         )
                         # Case 1: async generator / async iterator
                         if hasattr(out, "__aiter__"):
